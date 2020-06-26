@@ -49,6 +49,7 @@ function screenMessage(folder) {
                     document.querySelector('span[title="Remove label To Screen from this conversation"]').click();
                 }
                 setTimeout(() => {
+                    document.querySelector('div.bBe[role=button]').click();
                     ajaxRequest(folder);
                 }, 250);
             }, 250);
