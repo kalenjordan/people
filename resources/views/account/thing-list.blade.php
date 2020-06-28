@@ -1,4 +1,5 @@
 <?php
+/** @var \App\User $user */
 /** @var \App\Thing $thing */
 ?>
 
@@ -63,6 +64,9 @@
                             <a href="/account/things/{{ $thing->id() }}" class="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
                                 <div class="flex items-center px-4 py-4 sm:px-6">
                                     <div class="min-w-0 flex-1 flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <img class="h-12 w-12 rounded-full" src="{{ $user->avatar() }}" alt=""/>
+                                        </div>
                                         <div class="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
                                             <div>
                                                 <div class="text-sm leading-5 font-medium text-indigo-600 truncate">
