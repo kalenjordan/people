@@ -12,13 +12,20 @@
 @endsection
 
 @section('content')
-    <div class="pb-20 mx-auto max-w-2xl px-4 sm:px-6">
+    <div class="pb-20 mx-auto max-w-2xl px-4 sm:px-6 mt-6">
         <div class="text-center">
-            <img class="inline h-24 w-24 rounded-full mt-16 mb-8"
+            <img class="inline h-32 w-32 rounded-full mb-8"
                  src="{{ $person->avatar() }}" alt=""/>
-            <h2 class="text-3xl sm:text-3xl  md:text-4xl tracking-tight leading-10 font-extrabold text-gray-900  sm:leading-none">
+            <h2 class="mb-8 text-3xl sm:text-3xl md:text-4xl tracking-tight leading-10 font-extrabold text-gray-900  sm:leading-none">
                 {{ $person->name() }}
             </h2>
+            <div>
+                @foreach ($person->publicTagNames() as $tag)
+                    <span class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg m-1">
+                        {{ $tag }}
+                    </span>
+                @endforeach
+            </div>
         </div>
     </div>
 @endsection

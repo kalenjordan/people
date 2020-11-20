@@ -18,7 +18,7 @@
     </header>
 
     <main class="max-w-7xl mx-auto py-6 px-6 lg:px-8">
-        <form action="/account/persons/new" method="POST">
+        <form action="/account/people/new" method="POST">
             {{ csrf_field() }}
             <div>
                 <div>

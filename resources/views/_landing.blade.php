@@ -6,7 +6,8 @@
 
 <html>
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Xanh+Mono:ital@0;1&display=swap" rel="stylesheet">
     @yield('title')
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <meta charset="utf-8">
@@ -15,9 +16,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{--<link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>--}}
 </head>
-<body style="font-family: 'Cormorant', serif; font-size: 100%;">
-    <div id="app" class="bg-gray-50">
-        <div class="bg-gray-100" v-if="showSearch">
+<body style="font-family: 'Xanh Mono', monospace;">
+    <div id="app" class="bg-yellow-50">
+        <div class="bg-red-100" v-if="showSearch">
             <div class="p-4 max-w-lg mx-auto text-center">
                 <search-component class="inline-block"
                                   :app-id="'{{ Util::algoliaAppId()  }}'" :public-api-key="'{{ Util::algoliaPublicKeyFor(isset($user) ? $user : null) }}'"></search-component>
@@ -59,28 +60,19 @@
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
                             <div class="flex items-center justify-between w-full md:w-auto">
                                 <a href="/" v-shortkey="['h']" @shortkey="clickLink($event)">
-                                    @include('svg.logo', ['classes' => 'h-8 w-auto sm:h-10 text-indigo-500 hover:scale-105 transform duration-150'])
+                                    @include('svg.logo', ['classes' => 'h-8 w-auto sm:h-10 text-red-500 hover:scale-105 transform duration-150'])
                                 </a>
                                 <div class="-mr-2 flex items-center md:hidden">
-                                    <button @click="toggleMobileMenu" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                                    <button @click="toggleMobileMenu" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-red-400 hover:text-red-500 hover:bg-red-100 focus:outline-none focus:bg-red-100 focus:text-red-500 transition duration-150 ease-in-out">
                                         @include('svg.menu', ['classes' => 'h-6 w-6'])
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="hidden md:block">
-                            <a href="#link1" class="font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition duration-150 ease-in-out">
-                                Link 1
-                            </a>
-                            <a href="#link2" class="ml-10 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition duration-150 ease-in-out">
-                                Link 2
-                            </a>
                             <a href="javascript://" @click="toggleSearch" v-shortkey="['/']" @shortkey="toggleSearch"
-                               class="ml-10 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900 transition duration-150 ease-in-out">
+                               class="font-medium text-red-500 hover:text-red-900 focus:outline-none focus:text-red-900 transition duration-150 ease-in-out">
                                 Search
-                            </a>
-                            <a href="#" class="ml-10 font-medium text-indigo-500 hover:text-indigo-900 focus:outline-none focus:text-indigo-900 transition duration-150 ease-in-out">
-                                Call to action
                             </a>
                         </div>
                         <div class="hidden z-10 md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
@@ -107,8 +99,8 @@
                                         <div v-if="showAccountMenu" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
                                             <div class="rounded-md bg-white shadow-xs">
                                                 <div class="py-1">
-                                                    <a href="/account/settings" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">Settings</a>
-                                                    <a href="/logout" class="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
+                                                    <a href="/account/settings" class="block px-4 py-2 text-sm leading-5 text-red-700 hover:bg-red-100 hover:text-red-900 focus:outline-none focus:bg-red-100 focus:text-red-900">Settings</a>
+                                                    <a href="/logout" class="block w-full text-left px-4 py-2 text-sm leading-5 text-red-700 hover:bg-red-100 hover:text-red-900 focus:outline-none focus:bg-red-100 focus:text-red-900">
                                                         Sign out
                                                     </a>
                                                 </div>
@@ -120,7 +112,7 @@
                                 <span class="inline-flex rounded-md shadow">
                                     <a href="/auth"
                                        v-shortkey="['l']" @shortkey="clickLink($event)" v-tooltip="'L key'"
-                                       class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-indigo-600 bg-white hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700 transition duration-150 ease-in-out">
+                                       class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-red-600 bg-white hover:text-red-500 focus:outline-none focus:shadow-outline-blue active:bg-red-50 active:text-red-700 transition duration-150 ease-in-out">
                                         Log in
                                     </a>
                                 </span>
@@ -149,41 +141,43 @@
                                     </a>
                                 </div>
                                 <div class="-mr-2">
-                                    <button @click="toggleMobileMenu" type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                                    <button @click="toggleMobileMenu" type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-red-400 hover:text-red-500 hover:bg-red-100 focus:outline-none focus:bg-red-100 focus:text-red-500 transition duration-150 ease-in-out">
                                         @include('svg.icon-close', ['classes' => 'h-6 w-6'])
                                     </button>
                                 </div>
                             </div>
                             <div class="px-2 pt-2 pb-3">
-                                <a href="#link1" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">
-                                    Link 1
+                                <a href="javascript://" @click="toggleSearch" v-shortkey="['/']" @shortkey="toggleSearch"
+                                   class="block px-3 py-2 rounded-md text-base font-medium text-red-700 hover:text-red-900 hover:bg-red-50 focus:outline-none focus:text-red-900 focus:bg-red-50 transition duration-150 ease-in-out">
+                                    Search
                                 </a>
-                                <a href="#link2" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">
-                                    Link 2
-                                </a>
-                                <a href="#cta" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-indigo-700 hover:text-indigo-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">
-                                    Call to action
-                                </a>
+{{--                                <a href="#link2" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-red-700 hover:text-red-900 hover:bg-red-50 focus:outline-none focus:text-red-900 focus:bg-red-50 transition duration-150 ease-in-out">--}}
+{{--                                    Link 2--}}
+{{--                                </a>--}}
+{{--                                <a --}}
+{{--                                    class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-red-700 hover:text-red-900 hover:bg-red-50 focus:outline-none focus:text-red-900 focus:bg-red-50 transition duration-150 ease-in-out">--}}
+{{--                                    Call to action--}}
+{{--                                </a>--}}
                             </div>
 
                             @if (isset($user) && $user)
-                                <div class="pt-4 pb-3 border-t border-gray-100">
+                                <div class="pt-4 pb-3 border-t border-red-100">
                                     <div class="flex items-center px-5">
                                         <div class="flex-shrink-0">
                                             <img class="h-10 w-10 rounded-full"
                                                  src="{{ $user->avatar() }}" alt=""/>
                                         </div>
                                         <div class="ml-3">
-                                            <div class="text-base font-medium leading-none text-gray-600">
+                                            <div class="text-base font-medium leading-none text-red-600">
                                                 {{ $user->name() }}
                                             </div>
-                                            <div class="mt-1 text-sm font-medium leading-none text-gray-400">
+                                            <div class="mt-1 text-sm font-medium leading-none text-red-400">
                                                 {{ $user->email() }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="mt-3 px-2">
-                                        <a href="/account/settings" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:text-gray-900 focus:bg-gray-50 transition duration-150 ease-in-out">
+                                        <a href="/account/settings" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-red-700 hover:text-red-900 hover:bg-red-50 focus:outline-none focus:text-red-900 focus:bg-red-50 transition duration-150 ease-in-out">
                                             Settings
                                         </a>
                                     </div>
@@ -192,13 +186,13 @@
 
                             @if (isset($user))
                                 <div>
-                                    <a href="/logout" class="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100 hover:text-indigo-700 focus:outline-none focus:bg-gray-100 focus:text-indigo-700 transition duration-150 ease-in-out">
+                                    <a href="/logout" class="block w-full px-5 py-3 text-center font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 focus:outline-none focus:bg-red-100 focus:text-red-700 transition duration-150 ease-in-out">
                                         Log out
                                     </a>
                                 </div>
                             @else
                                 <div>
-                                    <a href="/auth" class="block w-full px-5 py-3 text-center font-medium text-indigo-600 bg-gray-50 hover:bg-gray-100 hover:text-indigo-700 focus:outline-none focus:bg-gray-100 focus:text-indigo-700 transition duration-150 ease-in-out">
+                                    <a href="/auth" class="block w-full px-5 py-3 text-center font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:text-red-700 focus:outline-none focus:bg-red-100 focus:text-red-700 transition duration-150 ease-in-out">
                                         Log in
                                     </a>
                                 </div>

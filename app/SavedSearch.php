@@ -2,9 +2,9 @@
 
 namespace App;
 
-class Person extends Airtable
+class SavedSearch extends Airtable
 {
-    protected $table = "People";
+    protected $table = "Saved Searches";
 
     public function name()
     {
@@ -16,14 +16,25 @@ class Person extends Airtable
         return isset($this->fields->{'Slug'}) ? $this->fields->{'Slug'} : null;
     }
 
-    public function publicTagNames()
+    public function avatars()
     {
-        return isset($this->fields->{'Public Tag Names'}) ? $this->fields->{'Public Tag Names'} : [];
+        $avatars = isset($this->fields->{'People Avatars'}) ? $this->fields->{'People Avatars'} : [];
+        $urls = [];
+        foreach ($avatars as $avatar) {
+            $urls[] = $avatar->url;
+        }
+
+        return $urls;
     }
 
     public function description()
     {
         return isset($this->fields->{'Description'}) ? $this->fields->{'Description'} : null;
+    }
+
+    public function filter()
+    {
+        return isset($this->fields->{'Filter'}) ? $this->fields->{'Filter'} : null;
     }
 
     public function price()
@@ -36,6 +47,14 @@ class Person extends Airtable
         return number_format($this->price(), 2);
     }
 
+
+
+    public function people()
+    {
+        $people = (new Person())->recordsWithFilter($this->filter());
+        return $people;
+    }
+
     public function isEnabled()
     {
         return isset($this->fields->{'Enabled'}) ? true : false;
@@ -43,7 +62,7 @@ class Person extends Airtable
 
     public function url()
     {
-        return '/' . $this->slug();
+        return '/s/' . $this->slug();
     }
 
     public function avatar()

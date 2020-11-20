@@ -1,0 +1,5 @@
+AND(FIND("Founder", {Public Tags}), FIND("eCommerce", {Public Tags}), FIND("SaaS", {Public Tags}))
+
+OR(FIND("Houston", {Public Tags}), FIND("Dallas", {Public Tags}), FIND("Austin", {Public Tags}), FIND("Texas", {Public Tags}))
+
+AND(FIND("Shopify", {Public Tags}), OR(FIND("Retailer", {Public Tags}), FIND("Brand", {Public Tags})))

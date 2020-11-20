@@ -17,4 +17,5 @@ Route::post('/account/people/{id}', 'AccountController@personEditPost');
 Route::get('/account/people/{id}/delete', 'AccountController@personDelete');
 
 Route::get('/blog/{slug}', 'IndexController@blog');
+Route::get('/s/{slug}', 'IndexController@savedSearch');
 Route::get('/{slug}', 'IndexController@person');

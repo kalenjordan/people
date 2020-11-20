@@ -147,7 +147,7 @@ class AccountController extends Controller
         ];
 
         $person = (new Person())->create($data);
-        $person->sea
+        $person->saveToSearchIndex();
         return redirect($person->url());
     }
 
