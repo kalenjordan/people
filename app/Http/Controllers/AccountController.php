@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Thing;
+use App\Person;
+use App\Twitter;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -52,12 +53,12 @@ class AccountController extends Controller
             'About' => $request->input('about'),
         ];
 
-        if ($request->input('favorite_things')) {
-            $thingsTheyUseIds = explode(',', $request->input('favorite_things'));
-            $thingsTheyUseIds = $this->_saveFavoriteThings($thingsTheyUseIds);
-            $data['Favorite Things'] = $thingsTheyUseIds;
+        if ($request->input('favorite_persons')) {
+            $personsTheyUseIds = explode(',', $request->input('favorite_persons'));
+            $personsTheyUseIds = $this->_saveFavoritePersons($personsTheyUseIds);
+            $data['Favorite Persons'] = $personsTheyUseIds;
         } else {
-            $data['Favorite Things'] = [];
+            $data['Favorite Persons'] = [];
         }
 
         $user->save($data);
@@ -72,7 +73,7 @@ class AccountController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      * @throws \Exception
      */
-    public function thingList(Request $request)
+    public function personList(Request $request)
     {
         $user = $request->session()->get('user');
         if (!$user) {
@@ -84,13 +85,13 @@ class AccountController extends Controller
             "sort"            => [['field' => 'Created', 'direction' => "desc"]],
         );
 
-        $things = (new Thing())->getRecords($params);
+        $persons = (new Person())->getRecords($params);
 
-        return view('account.thing-list', [
+        return view('account.person-list', [
             'error'   => $request->input('error'),
             'success' => $request->input('success'),
             'user'    => $user,
-            'things'  => $things,
+            'persons' => $persons,
         ]);
     }
 
@@ -101,14 +102,14 @@ class AccountController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      * @throws \Exception
      */
-    public function thingNew(Request $request)
+    public function personNew(Request $request)
     {
         $user = $request->session()->get('user');
         if (!$user) {
             return redirect("/auth?redirect=" . $request->path());
         }
 
-        return view('account.thing-new', [
+        return view('account.person-new', [
             'error'   => $request->input('error'),
             'success' => $request->input('success'),
             'user'    => $user,
@@ -122,7 +123,7 @@ class AccountController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      * @throws \Exception
      */
-    public function thingNewPost(Request $request)
+    public function personNewPost(Request $request)
     {
         /** @var User $user */
         $user = $request->session()->get('user');
@@ -130,14 +131,24 @@ class AccountController extends Controller
             return redirect("/?error=not_logged_in");
         }
 
-        $thing = (new Thing())->create([
-            'Name'        => $request->input('name'),
-            'Description' => $request->input('description'),
-            'Price'       => (float) $request->input('price'),
-            'User'        => [$user->id()],
-        ]);
+        $name = $request->input('name');
+        $profile = Twitter::getProfile($name);
 
-        return redirect('/account/things?success=Created ' . $thing->name());
+        $data = [
+            'Name'        => $profile['name'],
+            'Twitter'     => $name,
+            'Avatar'      => [
+                [
+                    'url' => $profile['avatar'],
+                ]
+            ],
+            'Description' => $profile['description'],
+            'Slug'        => $name,
+        ];
+
+        $person = (new Person())->create($data);
+        $person->sea
+        return redirect($person->url());
     }
 
     /**
@@ -147,23 +158,23 @@ class AccountController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      * @throws \Exception
      */
-    public function thingEdit(Request $request, $thingId)
+    public function personEdit(Request $request, $personId)
     {
         $user = $request->session()->get('user');
         if (!$user) {
             return redirect("/auth?redirect=" . $request->path());
         }
 
-        $thing = (new Thing())->load($thingId);
-        if (!$thing) {
-            throw new \Exception("Couldn't load thing: $thingId");
+        $person = (new Person())->load($personId);
+        if (!$person) {
+            throw new \Exception("Couldn't load person: $personId");
         }
 
-        return view('account.thing-edit', [
+        return view('account.person-edit', [
             'error'   => $request->input('error'),
             'success' => $request->input('success'),
             'user'    => $user,
-            'thing'   => $thing,
+            'person'  => $person,
         ]);
     }
 
@@ -174,7 +185,7 @@ class AccountController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      * @throws \Exception
      */
-    public function thingEditPost(Request $request, $thingId)
+    public function personEditPost(Request $request, $personId)
     {
         /** @var User $user */
         $user = $request->session()->get('user');
@@ -182,41 +193,41 @@ class AccountController extends Controller
             return redirect("/?error=not_logged_in");
         }
 
-        $thing = (new Thing())->load($thingId);
-        if (!$thing) {
-            throw new \Exception("Couldn't load thing: $thingId");
+        $person = (new Person())->load($personId);
+        if (!$person) {
+            throw new \Exception("Couldn't load person: $personId");
         }
 
         $data = [
             'Name'        => $request->input('name'),
             'Description' => $request->input('description'),
-            'Price'       => (float) $request->input('price'),
+            'Price'       => (float)$request->input('price'),
         ];
 
-        $thing->save($data);
+        $person->save($data);
 
-        return redirect($thing->editUrl() . '?success=Saved');
+        return redirect($person->editUrl() . '?success=Saved');
     }
 
     /**
      * @param User $user
-     * @param      $thingsTheyUseIds
+     * @param      $personsTheyUseIds
      *
      * @return mixed
      * @throws \Exception
      */
-    protected function _saveFavoriteThings($thingIds)
+    protected function _saveFavoritePersons($personIds)
     {
-        for ($i = 0; $i < count($thingIds); $i++) {
-            $thingId = $thingIds[$i];
-            if (substr($thingId, 0, 4) == 'new_') {
-                $newThingName = substr($thingId, 4);
-                $thingTheyUse = (new Thing())->create(['Name' => $newThingName]);
-                $thingIds[$i] = $thingTheyUse->id();
+        for ($i = 0; $i < count($personIds); $i++) {
+            $personId = $personIds[$i];
+            if (substr($personId, 0, 4) == 'new_') {
+                $newPersonName = substr($personId, 4);
+                $personTheyUse = (new Person())->create(['Name' => $newPersonName]);
+                $personIds[$i] = $personTheyUse->id();
             }
         }
 
-        return $thingIds;
+        return $personIds;
     }
 
     /**
@@ -226,7 +237,7 @@ class AccountController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      * @throws \Exception
      */
-    public function thingDelete(Request $request, $thingId)
+    public function personDelete(Request $request, $personId)
     {
         /** @var User $user */
         $user = $request->session()->get('user');
@@ -234,14 +245,14 @@ class AccountController extends Controller
             return redirect("/?error=not_logged_in");
         }
 
-        $thing = (new Thing())->load($thingId);
-        if (!$thing) {
-            throw new \Exception("Couldn't load thing: $thingId");
+        $person = (new Person())->load($personId);
+        if (!$person) {
+            throw new \Exception("Couldn't load person: $personId");
         }
 
-        $deletedName = $thing->name();
-        $thing->delete();
+        $deletedName = $person->name();
+        $person->delete();
 
-        return redirect("/account/things/?success=Deleted $deletedName");
+        return redirect("/account/persons/?success=Deleted $deletedName");
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
 namespace App;
+use Algolia\AlgoliaSearch\SearchClient;
+use Exception;
 
 class Airtable
 {
@@ -29,12 +31,12 @@ class Airtable
 
     /**
      * @return \TANIOS\Airtable\Airtable
-     * @throws \Exception
+     * @throws Exception
      */
     public static function api()
     {
-        if (! env('AIRTABLE_API_KEY') || ! env('AIRTABLE_BASE_ID')) {
-            throw new \Exception("Need to set airtable api key and base ID");
+        if (!env('AIRTABLE_API_KEY') || !env('AIRTABLE_BASE_ID')) {
+            throw new Exception("Need to set airtable api key and base ID");
         }
 
         $airtable = new \TANIOS\Airtable\Airtable(array(
@@ -49,18 +51,18 @@ class Airtable
      * @param $content
      * @param $update
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function save($update)
     {
-        if (! $this->table || ! $this->id) {
-            throw new \Exception("Missing table or id when trying to save");
+        if (!$this->table || !$this->id) {
+            throw new Exception("Missing table or id when trying to save");
         }
 
         $content = $this->table . "/" . $this->id;
         $result = self::api()->updateContent($content, $update);
         if (isset($result->error->message)) {
-            throw new \Exception($result->error->message);
+            throw new Exception($result->error->message);
         }
 
         $this->id = $result->id;
@@ -73,18 +75,18 @@ class Airtable
      * @param $content
      * @param $update
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function delete()
     {
-        if (! $this->id) {
-            throw new \Exception("Missing id on this record when trying to delete");
+        if (!$this->id) {
+            throw new Exception("Missing id on this record when trying to delete");
         }
 
         $content = $this->table . "/" . $this->id;
         $result = self::api()->deleteContent($content);
         if (isset($result->error->message)) {
-            throw new \Exception($result->error->message);
+            throw new Exception($result->error->message);
         }
 
         return $this;
@@ -94,14 +96,14 @@ class Airtable
      * @param $content
      *
      * @return \TANIOS\Airtable\Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function getContent($content, $params = "")
     {
         $request = self::api()->getContent($content, $params);
         $result = $request->getResponse();
         if (isset($result->error->message)) {
-            throw new \Exception($result->error->message);
+            throw new Exception($result->error->message);
         }
 
         return $result;
@@ -111,7 +113,7 @@ class Airtable
      * @param $id
      *
      * @return $this|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function load($id)
     {
@@ -120,7 +122,7 @@ class Airtable
         $request = self::api()->getContent($content);
         $result = $request->getResponse();
         if (isset($result->error->message)) {
-            throw new \Exception($result->error->message);
+            throw new Exception($result->error->message);
         }
 
         if (!isset($result->id)) {
@@ -138,14 +140,14 @@ class Airtable
      * @param string $params
      *
      * @return array|mixed|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function getRecords($params = "")
     {
         try {
             $result = $this->getContent($this->table, $params);
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage() . ": {$this->table} - " . print_r($params, 1));
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage() . ": {$this->table} - " . print_r($params, 1));
         }
 
         if (isset($result['records'])) {
@@ -164,7 +166,7 @@ class Airtable
      * @param string $params
      *
      * @return array|mixed|null
-     * @throws \Exception
+     * @throws Exception
      */
 //    public static function getRecordsWithOffset($content, $params = "")
 //    {
@@ -181,7 +183,7 @@ class Airtable
      * @param $filter
      *
      * @return mixed|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function lookupWithFilter($filter)
     {
@@ -203,7 +205,7 @@ class Airtable
      * @param $filter
      *
      * @return mixed|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function recordsWithFilter($filter)
     {
@@ -218,16 +220,16 @@ class Airtable
      * @param $table
      * @param $data
      *
+     * @return \TANIOS\Airtable\Response
+     * @throws Exception
      * @deprecated use create() instead
      *
-     * @return \TANIOS\Airtable\Response
-     * @throws \Exception
      */
     public static function saveContent($table, $data)
     {
         $result = self::api()->saveContent($table, $data);
         if (isset($result->error->message)) {
-            throw new \Exception($result->error->message);
+            throw new Exception($result->error->message);
         }
 
         return $result;
@@ -237,13 +239,13 @@ class Airtable
      * @param $data
      *
      * @return static
-     * @throws \Exception
+     * @throws Exception
      */
     public function create($data)
     {
         $result = self::api()->saveContent($this->table, $data);
         if (isset($result->error->message)) {
-            throw new \Exception($result->error->message);
+            throw new Exception($result->error->message);
         }
 
         return new static($result);
@@ -256,12 +258,12 @@ class Airtable
 
     public function searchTitle()
     {
-        return isset($this->fields->{'Search Title'}) ? $this->fields->{'Search Title'} : 0;
+        return $this->name();
     }
 
     public function searchIndexId()
     {
-        return 'airtable_record_' . $this->id();
+        return $this->url();
     }
 
     public function toSearchIndexArray()
@@ -271,5 +273,16 @@ class Airtable
             'type'         => 'generic',
             'search_title' => $this->searchTitle(),
         ];
+    }
+
+    public function saveToSearchIndex()
+    {
+        $client = SearchClient::create(Util::algoliaAppId(), Util::algoliaPrivateKey());
+        $index = $client->initIndex('all');
+
+        $data = $this->toSearchIndexArray();
+        $index->saveObjects([$data], [
+            'objectIDKey' => 'object_id',
+        ]);
     }
 }

@@ -54,20 +54,20 @@ class User extends Airtable
 
     public function searchTitle()
     {
-        return isset($this->fields->{'Search Title'}) ? $this->fields->{'Search Title'} : 0;
+        return $this->name();
     }
 
     public function searchIndexId()
     {
-        return 'user_' . $this->id();
+        return $this->url();
     }
 
     public function toSearchIndexArray()
     {
         return [
+            'type'         => 'user',
             'url'          => $this->url(),
             'object_id'    => $this->searchIndexId(),
-            'type'         => 'user',
             'search_title' => $this->searchTitle(),
             'name'         => $this->name(),
             'about'        => $this->about(),

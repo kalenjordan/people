@@ -15,7 +15,7 @@ console.log(files);
 const app = new Vue({
     el: '#app',
     mounted() {
-        let formElement = document.querySelector('textarea');
+        let formElement = document.querySelector('input.form-input,textarea');
         if (formElement) {
             formElement.focus();
         }
@@ -34,6 +34,7 @@ const app = new Vue({
             focusMode: false,
             showSearch: false,
             successMessage: null,
+            showAddPerson: null,
         }
     },
     methods: {

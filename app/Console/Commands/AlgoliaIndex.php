@@ -6,6 +6,7 @@ use Algolia\AlgoliaSearch\SearchClient;
 use Algolia\AlgoliaSearch\SearchIndex;
 use App\Airtable;
 use App\Blog;
+use App\Person;
 use App\User;
 use App\Util;
 use Illuminate\Console\Command;
@@ -21,7 +22,7 @@ class AlgoliaIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'algolia:index {--limit=} {--v} {--tables=}';
+    protected $signature = 'search:index {--limit=} {--v} {--people} {--all} {--clear}';
 
     /**
      * The console command description.
@@ -52,12 +53,20 @@ class AlgoliaIndex extends Command
 
     protected function shouldIndex($table)
     {
-        if (!$this->_tables()) {
+        if ($this->hasOption($table) && $this->option($table)) {
             return true;
         }
 
-        $tables = $this->_tables();
-        return in_array($table, $tables);
+        if ($this->option('all')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function _shouldClearIndex()
+    {
+        return $this->option('clear') ? $this->option('clear') : false;
     }
 
     /**
@@ -75,9 +84,9 @@ class AlgoliaIndex extends Command
         $this->index = $client->initIndex('all');
         $this->info("Updating Algolia search index (limit: " . $this->_limit() . ")");
 
-        if ($this->shouldIndex('blogs')) {
-            $blogs = (new Blog())->getRecords($params);
-            $this->_indexRecords($blogs, 'blogs');
+        if ($this->_shouldClearIndex()) {
+            $this->info("*Clearing index*");
+            $this->index->clearObjects();
         }
 
         if ($this->shouldIndex('users')) {
@@ -85,8 +94,9 @@ class AlgoliaIndex extends Command
             $this->_indexRecords($users, 'users');
         }
 
-        if ($this->shouldIndex('pages')) {
-            $this->_indexPages();
+        if ($this->shouldIndex('people')) {
+            $persons = (new Person())->getRecords();
+            $this->_indexRecords($persons, 'people');
         }
 
         return;

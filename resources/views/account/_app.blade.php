@@ -60,12 +60,12 @@
                         </div>
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline">
-                                <a href="#link1" class="px-3 py-2 rounded-md text-sm font-medium text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700">
-                                    Account Link 1
+                                <a href="/account/persons" class="px-3 py-2 rounded-md text-sm font-medium text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700">
+                                    People
                                 </a>
-                                <a href="/account/things" class="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">
-                                    Things
-                                </a>
+{{--                                <a href="/account/things" class="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">--}}
+{{--                                    Things--}}
+{{--                                </a>--}}
                             </div>
                         </div>
                     </div>
@@ -97,12 +97,12 @@
                                 -->
                                 <div v-if="showAccountMenu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
                                     <div class="py-1 rounded-md bg-white shadow-xs" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
-                                        <a href="#link1" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                                            Account Link 1
+                                        <a href="/account/persons" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                            People
                                         </a>
-                                        <a href="/account/things" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                                            Things
-                                        </a>
+{{--                                        <a href="/account/things" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">--}}
+{{--                                            Things--}}
+{{--                                        </a>--}}
                                         <a href="/account/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
                                         <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
                                     </div>

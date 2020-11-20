@@ -9,11 +9,12 @@ Route::get('/auth/callback', 'AuthController@handleGoogleCallback');
 Route::get('/account/settings', 'AccountController@settings');
 Route::post('/account/settings', 'AccountController@settingsPost');
 
-Route::get('/account/things', 'AccountController@thingList');
-Route::get('/account/things/new', 'AccountController@thingNew');
-Route::post('/account/things/new', 'AccountController@thingNewPost');
-Route::get('/account/things/{id}', 'AccountController@thingEdit');
-Route::post('/account/things/{id}', 'AccountController@thingEditPost');
-Route::get('/account/things/{id}/delete', 'AccountController@thingDelete');
+Route::get('/account/people', 'AccountController@personList');
+Route::get('/account/people/new', 'AccountController@personNew');
+Route::post('/account/people/new', 'AccountController@personNewPost');
+Route::get('/account/people/{id}', 'AccountController@personEdit');
+Route::post('/account/people/{id}', 'AccountController@personEditPost');
+Route::get('/account/people/{id}/delete', 'AccountController@personDelete');
 
 Route::get('/blog/{slug}', 'IndexController@blog');
+Route::get('/{slug}', 'IndexController@person');

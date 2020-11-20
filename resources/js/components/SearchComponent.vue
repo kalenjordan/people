@@ -4,6 +4,7 @@
         <ais-results>
             <template slot-scope="{ result }">
                 <a class="ais-result-link no-link" :href="result.url" v-shortkey="['enter']" @shortkey="submitSearch">
+                    <img v-if="result.avatar" class="inline h-4 w-4 rounded-full mr-1" :src="result.avatar">
                     {{ result.search_title }}
                 </a>
             </template>
