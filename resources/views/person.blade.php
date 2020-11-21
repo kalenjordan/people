@@ -21,11 +21,21 @@
             </h2>
             <div>
                 @foreach ($person->publicTagNames() as $tag)
-                    <span class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg m-1">
+                    <span
+                        class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg m-1">
                         {{ $tag }}
                     </span>
                 @endforeach
             </div>
         </div>
+
+        @if ($user)
+            <div>
+                <public-tag-select
+                    :record='{!! \App\Util::json($person->toData()) !!}'
+                    :api-key="'{{ $user->apiKey() }}'" :api-url="'/api/hero-action'">
+                </public-tag-select>
+            </div>
+        @endif
     </div>
 @endsection

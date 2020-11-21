@@ -51,6 +51,21 @@ class Person extends Airtable
         return isset($this->fields->{'Avatar'}[0]->url) ? $this->fields->{'Avatar'}[0]->url : null;
     }
 
+    public function created()
+    {
+        return isset($this->fields->{'Created'}) ? $this->fields->{'Created'} : null;
+    }
+
+    public function createdDate()
+    {
+        $date = $this->created();
+        if (!$date) {
+            return null;
+        }
+
+        return new Date($date);
+    }
+
     public function toSearchIndexArray()
     {
         return [
@@ -62,4 +77,13 @@ class Person extends Airtable
         ];
     }
 
+    public function toData()
+    {
+        return [
+            'id'    => $this->id(),
+            'url'   => $this->url(),
+            'name'  => $this->name(),
+            'avatar' => $this->avatar(),
+        ];
+    }
 }

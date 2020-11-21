@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
+use Cookie;
+
 class User extends Airtable
 {
 
@@ -117,5 +120,79 @@ class User extends Airtable
         }
 
         return $results;
+    }
+
+    public function lastActive()
+    {
+        return isset($this->fields->{'Last Active'}) ? $this->fields->{'Last Active'} : null;
+    }
+
+    public function lastActiveDate()
+    {
+        if (!$this->lastActive()) {
+            return null;
+        }
+
+        return new Date($this->lastActive());
+    }
+
+    public function lastActiveStale()
+    {
+        if (!$this->lastActive()) {
+            return true;
+        }
+
+        if ($this->lastActiveDate()->isDaysAgo(1)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function loggedInUser(Request $request)
+    {
+        $user = self::_loggedInUser();
+        if (!$user) {
+            return null;
+        }
+
+        if ($user->lastActiveStale()) {
+            $user = (new User())->load($user->id());
+            $now = Date::now()->toDateTimeString();
+            $user->save([
+                'Last Active' => $now,
+            ]);
+            $user = $user->refreshSession($request);
+        }
+
+        return $user;
+    }
+
+    public static function _loggedInUser()
+    {
+        $cookieUserId = Cookie::get('user_id');
+
+        $sessionUser = session()->get('user');
+        if ($sessionUser) {
+            return $sessionUser;
+        }
+
+        if ($cookieUserId) {
+            $user = (new User())->load($cookieUserId);
+            if ($user) {
+                session()->put('user', $user);
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
+    public function refreshSession(Request $request)
+    {
+        $user = (new User())->load($this->id());
+        $request->session()->put('user', $user);
+
+        return $user;
     }
 }

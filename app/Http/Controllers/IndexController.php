@@ -9,6 +9,7 @@ use App\SavedSearch;
 use App\User;
 use App\Util;
 use Illuminate\Http\Request;
+use Exception;
 
 class IndexController extends Controller
 {
@@ -16,32 +17,38 @@ class IndexController extends Controller
     /**
      * @param Request $request
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
     public function welcome(Request $request)
     {
-        $user = $request->session()->get('user');
+        try {
+            $user = User::loggedInUser($request);
+        } catch (Exception $e) {
+            return redirect('/logout');
+        }
 
         $savedSearches = (new SavedSearch())->getRecords();
 
         return view('welcome', [
             'error'         => $request->input('error'),
             'success'       => $request->input('success'),
-            'user'          => $user,
             'savedSearches' => $savedSearches,
+            'user'          => $user,
         ]);
     }
 
     /**
      * @param Request $request
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
     public function person(Request $request, $slugOrId)
     {
-        $user = $request->session()->get('user');
+        try {
+            $user = User::loggedInUser($request);
+        } catch (Exception $e) {
+            return redirect('/logout');
+        }
 
         $person = (new Person())->lookupWithFilter("Slug = '$slugOrId'");
         if (!$person) {
@@ -51,8 +58,8 @@ class IndexController extends Controller
         return view('person', [
             'error'   => $request->input('error'),
             'success' => $request->input('success'),
-            'user'    => $user,
             'person'  => $person,
+            'user'    => $user,
         ]);
     }
 

@@ -4,6 +4,11 @@ namespace App;
 
 class Util
 {
+    public static function json($object)
+    {
+        return json_encode($object, JSON_HEX_APOS);
+    }
+
     public static function isProduction()
     {
         return env('APP_ENV') == 'production';

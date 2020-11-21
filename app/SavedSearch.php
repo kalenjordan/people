@@ -51,7 +51,12 @@ class SavedSearch extends Airtable
 
     public function people()
     {
-        $people = (new Person())->recordsWithFilter($this->filter());
+        $params = array(
+            "filterByFormula" => $this->filter(),
+            "sort"            => [['field' => 'Created', 'direction' => "desc"]],
+        );
+
+        $people = (new Person())->getRecords($params);
         return $people;
     }
 
