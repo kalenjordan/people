@@ -164,7 +164,7 @@ class ApiController extends Controller
         $query = $request->input('query');
 
         $params = array(
-            "sort"            => array(array('field' => 'Name', 'direction' => "asc")),
+            "sort"            => array(array('field' => 'Count', 'direction' => "desc")),
             "maxRecords"      => 10,
             "filterByFormula" => "FIND(LOWER('$query'), LOWER(Name)) > 0",
         );
