@@ -21,13 +21,13 @@
                 <h2 class="mb-8 text-3xl sm:text-3xl md:text-4xl tracking-tight leading-10 font-extrabold text-gray-900  sm:leading-none">
                     {{ $person->name() }}
                 </h2>
-                <div class="mb-2">
+                <div class="mb-2" v-if="!isAddingPrivateTag">
                     <span v-for="tag in public_tags"
                           class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-yellow-200 text-yellow-800 text-lg m-1">
                         @{{ tag }}
                     </span>
                     @if ($user)
-                        <a href="javascript://"
+                        <a href="javascript://" v-if="!isAddingPublicTag"
                             v-shortkey="['t']" @shortkey="togglePublicTag"
                             @click="togglePublicTag"
                             class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-yellow-200 text-yellow-800 text-lg -ml-1 m-1">
@@ -36,15 +36,15 @@
                         </a>
                     @endif
                 </div>
-                <div class="mb-2">
+                <div class="mb-2" v-if="!isAddingPublicTag">
                     <span v-for="tag in private_tags"
                           class="inline-flex border-4 border-dashed items-center px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg m-1">
                         @{{ tag.name }}
                     </span>
                     @if ($user)
-                        <a href="javascript://"
-                           v-shortkey="['t']" @shortkey="togglePublicTag"
-                           @click="togglePublicTag"
+                        <a href="javascript://" v-if="!isAddingPrivateTag"
+                           v-shortkey="['shift', 't']" @shortkey="togglePrivateTag"
+                           @click="togglePrivateTag"
                            class="inline-flex items-center border-4 border-dashed px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg -ml-1 m-1">
                             @include('svg.icon-plus', ['classes' => 'h-3 w-3 inline mr-1 text-gray-800'])
                             New Private Tag
@@ -55,10 +55,21 @@
 
             @if ($user)
                 <div v-if="isAddingPublicTag" class="add-public-tag max-w-sm mx-auto mt-8">
-                    <public-tag-select
+                    <tag-select
+                        :placeholder="'Add or remove a public tag'"
+                        :type="'public'"
                         :person='{!! \App\Util::json($person->toData()) !!}'
-                        :api-key="'{{ $user->apiKey() }}'" :api-url="'/api/hero-action'">
-                    </public-tag-select>
+                        :api-key="'{{ $user->apiKey() }}'">
+                    </tag-select>
+                </div>
+
+                <div v-if="isAddingPrivateTag" class="add-private-tag max-w-sm mx-auto mt-8">
+                    <tag-select
+                        :placeholder="'Add or remove a private tag'"
+                        :type="'private'"
+                        :person='{!! \App\Util::json($person->toData()) !!}'
+                        :api-key="'{{ $user->apiKey() }}'">
+                    </tag-select>
                 </div>
             @endif
         </div>

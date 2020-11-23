@@ -36,6 +36,11 @@ class PrivateTag extends Airtable
         return new Date($date);
     }
 
+    public function peopleIds()
+    {
+        return isset($this->fields->{'People'}) ? $this->fields->{'People'} : [];
+    }
+
     public function toSearchIndexArray()
     {
         return [
@@ -47,7 +52,7 @@ class PrivateTag extends Airtable
     public function toData()
     {
         return [
-            // 'id'   => $this->id(),
+            'id'   => $this->id(),
             'name' => $this->name(),
         ];
     }

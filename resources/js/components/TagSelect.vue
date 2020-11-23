@@ -1,7 +1,7 @@
 <template>
     <div>
-        <multiselect track-by="id" :loading="isLoading" @select="selectAction" @search-change="asyncFind"
-                     :multiple="false" v-model="selectedRecord" :options="options" placeholder="Select a tag"
+        <multiselect track-by="id" :loading="isLoading" @select="select" @search-change="asyncFind"
+                     :multiple="false" v-model="selectedRecord" :options="options" :placeholder="placeholder"
                      open-direction="top" @tag="tag" :taggable="true" tag-position="bottom"
                      selectLabel="" deselectLabel="" label="name" :class="{'opacity-50' : isProcessing}">
         </multiselect>
@@ -15,7 +15,7 @@
     Vue.component('multiselect', Multiselect);
 
     export default {
-        props: ['apiKey', 'apiUrl', 'person'],
+        props: ['apiKey', 'apiUrl', 'person', 'placeholder', 'type'],
         components: {Multiselect},
         data() {
             return {
@@ -28,40 +28,35 @@
         mounted() {
             // console.log(this.record);
             // Nothing for now
+            if (this.type !== 'public' && this.type !== 'private') {
+                console.error("Type should be public or private");
+            }
         },
         methods: {
             asyncFind(query) {
                 this.isLoading = true;
-                axios.get('/api/public-tags?api_key=' + this.apiKey + '&query=' + query).then((response) => {
+                axios.get('/api/' + this.type + '-tags?api_key=' + this.apiKey + '&query=' + query).then((response) => {
                     this.options = response.data;
                     this.isLoading = false;
                 });
             },
-            selectAction(event) {
-                console.log('Selected ' + event.id);
-
-                let url = '/api/people/' + this.person.slug + '/public-tag?api_key=' + this.apiKey + '&tag=' + event.id;
-
+            select(event) {
+                let url = '/api/people/' + this.person.slug + '/' + this.type + '-tag?api_key=' + this.apiKey + '&tag=' + event.id;
                 this.isProcessing = true;
+
                 axios.get(url).then((response) => {
                     this.isProcessing = false;
-                    if (response.data.message) {
-                        window.Events.$emit('success', response.data.message);
-                    }
                     if (response.data.person) {
                         window.Events.$emit('person-updated', response.data.person);
                     }
                 });
             },
             tag(tagName) {
-                let url = '/api/people/' + this.person.slug + '/public-tag?api_key=' + this.apiKey + '&new_tag=' + tagName;
+                let url = '/api/people/' + this.person.slug + '/' + this.type + '-tag?api_key=' + this.apiKey + '&new_tag=' + tagName;
 
                 this.isProcessing = true;
                 axios.get(url).then((response) => {
                     this.isProcessing = false;
-                    if (response.data.message) {
-                        window.Events.$emit('success', response.data.message);
-                    }
                     if (response.data.person) {
                         window.Events.$emit('person-updated', response.data.person);
                     }

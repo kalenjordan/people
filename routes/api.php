@@ -24,3 +24,6 @@ Route::get('/geocode-delete', 'ApiController@geocodeDelete');
 
 Route::get('/public-tags', 'ApiController@publicTags');
 Route::get('/people/{slug}/public-tag', 'ApiController@personPublicTag');
+
+Route::get('/private-tags', 'ApiController@privateTags');
+Route::get('/people/{slug}/private-tag', 'ApiController@personPrivateTag');

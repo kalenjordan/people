@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Person;
+use App\PrivateTag;
 use App\PublicTag;
 use App\Thing;
 use App\User;
@@ -216,6 +217,97 @@ class ApiController extends Controller
             'success' => true,
             'message' => $message,
             'person'  => $person->toData(),
+        ];
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function privateTags(Request $request)
+    {
+        $user = $this->_loadFromApiKey($request);
+        if (!$user) {
+            throw new \Exception("User not found");
+        }
+
+        $query = $request->input('query');
+
+        $params = array(
+            "sort"            => array(array('field' => 'Name', 'direction' => "asc")),
+            "maxRecords"      => 10,
+            "filterByFormula" => "AND(
+                FIND(LOWER('$query'), LOWER(Name)) > 0,
+                {User Record ID} = '{$user->id()}'
+            )",
+        );
+        $tags = (new PrivateTag())->getRecords($params);
+
+        $data = [];
+        foreach ($tags as $tag) {
+            /** @var PublicTag $tag */
+            $data[] = $tag->toData();
+        }
+
+        return $data;
+    }
+
+    public function personPrivateTag(Request $request, $slug)
+    {
+        $user = $this->_loadFromApiKey($request);
+        if (!$user) {
+            throw new \Exception("User not found");
+        }
+
+        /** @var Person $person */
+        $person = (new Person())->lookupWithFilter("Slug = '$slug'");
+        if (!$person) {
+            abort(404);
+        }
+
+        $tagId = $request->input('tag');
+        $newTag = $request->input('new_tag');
+        if ($newTag) {
+            $tag = (new PrivateTag())->create([
+                'Name'   => $newTag,
+                'User'   => [$user->id()],
+                'Person' => [$person->id()],
+            ]);
+            return [
+                'success' => true,
+                'person'  => $person->toDataFor($user),
+            ];
+        }
+
+
+        if (!$tagId) {
+            throw new \Exception("Missing tag id");
+        }
+
+        $tag = (new PrivateTag())->load($tagId);
+        if (!$tag) {
+            throw new \Exception("Couldn't find tag by ID: $tagId");
+        }
+
+        $people = $tag->peopleIds();
+        if (($key = array_search($person->id(), $people)) !== false) {
+            unset($people[$key]);
+            $people = array_values($people);
+        } else {
+            $people[] = $person->id();
+        }
+        $tag->save([
+            'People' => $people,
+        ]);
+
+        // Refresh
+        $person = $person->load($person->id());
+
+        return [
+            'success' => true,
+            'person'  => $person->toDataFor($user),
         ];
     }
 }

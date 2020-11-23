@@ -4,6 +4,7 @@
         data() {
             return {
                 isAddingPublicTag: null,
+                isAddingPrivateTag: null,
                 public_tags: {},
                 private_tags: {},
             }
@@ -14,7 +15,9 @@
 
             window.Events.$on('person-updated', (person) => {
                 this.public_tags = person.public_tags;
+                this.private_tags = person.private_tags;
                 this.isAddingPublicTag = false;
+                this.isAddingPrivateTag = false;
             });
             document.addEventListener('keydown', (e) => {
                 let activeElement = document.activeElement;
@@ -32,9 +35,20 @@
                     });
                 }
             },
+            togglePrivateTag() {
+                this.isAddingPrivateTag = ! this.isAddingPrivateTag;
+                if (this.isAddingPrivateTag) {
+                    this.$nextTick(() => {
+                        if (document.querySelector('.add-private-tag input.multiselect__input')) {
+                            document.querySelector('.add-private-tag input.multiselect__input').focus();
+                        }
+                    });
+                }
+            },
             hotkeys(e, activeElement) {
                 if (e.code === 'Escape') {
                     this.isAddingPublicTag = false;
+                    this.isAddingPrivateTag = false;
                 }
             },
         }
