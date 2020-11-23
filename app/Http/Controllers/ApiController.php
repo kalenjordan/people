@@ -181,6 +181,11 @@ class ApiController extends Controller
 
     public function personPublicTag(Request $request, $slug)
     {
+        $user = $this->_loadFromApiKey($request);
+        if (!$user) {
+            throw new \Exception("User not found");
+        }
+
         /** @var Person $person */
         $person = (new Person())->lookupWithFilter("Slug = '$slug'");
         if (!$person) {
@@ -216,7 +221,7 @@ class ApiController extends Controller
         return [
             'success' => true,
             'message' => $message,
-            'person'  => $person->toData(),
+            'person'  => $person->toDataFor($user),
         ];
     }
 
