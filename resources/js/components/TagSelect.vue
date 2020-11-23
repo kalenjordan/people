@@ -55,10 +55,9 @@
             },
             tag(tagName) {
                 let url = '/api/people/' + this.person.slug + '/' + this.type + '-tag?api_key=' + this.apiKey + '&new_tag=' + tagName;
+                window.Events.$emit('hide-tag-select');
 
-                this.isProcessing = true;
                 axios.get(url).then((response) => {
-                    this.isProcessing = false;
                     if (response.data.person) {
                         window.Events.$emit('person-updated', response.data.person);
                     }
