@@ -10,3 +10,5 @@ OR(
 )
 
 FIND("Conservative tagged by Kalen", {Private Tags})
+
+FIND("Test Private Tag tagged by Commerce Hero", {Private Tags})
