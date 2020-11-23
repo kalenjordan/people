@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Util;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Http\Request;
 use Cookie;
@@ -63,6 +64,7 @@ class AuthController extends Controller
                         'url' => isset($socialiteUser->avatar) ? $socialiteUser->avatar : null,
                     ]
                 ],
+                'API Key' => md5(now() . Util::appName() . $email),
             ]);
         }
 

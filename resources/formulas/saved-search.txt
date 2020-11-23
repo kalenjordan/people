@@ -8,3 +8,5 @@ OR(
     FIND("Likes To Hike tagged by Kalen", {Private Tags}),
     FIND("Kinda Interested Hiking tagged by Kalen", {Private Tags})
 )
+
+FIND("Conservative tagged by Kalen", {Private Tags})

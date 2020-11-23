@@ -13,7 +13,7 @@
 
 @section('content')
     <person inline-template
-            :person='{!! \App\Util::json($person->toDataFor($user)) !!}'>
+            :person='{!! \App\Util::json($personData) !!}'>
         <div class="pb-20 mx-auto max-w-2xl px-4 sm:px-6 mt-6">
             <div class="text-center">
                 <img class="inline h-32 w-32 rounded-full mb-8"
@@ -58,7 +58,7 @@
                     <tag-select
                         :placeholder="'Add or remove a public tag'"
                         :type="'public'"
-                        :person='{!! \App\Util::json($person->toData()) !!}'
+                        :person='{!! \App\Util::json($personData) !!}'
                         :api-key="'{{ $user->apiKey() }}'">
                     </tag-select>
                 </div>
@@ -67,7 +67,7 @@
                     <tag-select
                         :placeholder="'Add or remove a private tag'"
                         :type="'private'"
-                        :person='{!! \App\Util::json($person->toData()) !!}'
+                        :person='{!! \App\Util::json($personData) !!}'
                         :api-key="'{{ $user->apiKey() }}'">
                     </tag-select>
                 </div>

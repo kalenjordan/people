@@ -27,7 +27,16 @@ class IndexController extends Controller
             return redirect('/logout');
         }
 
-        $savedSearches = (new SavedSearch())->getRecords();
+        if ($user) {
+            $filter = "OR(
+                Private = 0,
+                AND(Private = 1, {User Record ID} = '{$user->id()}')
+            )";
+        } else {
+            $filter = "Private = 0";
+        }
+
+        $savedSearches = (new SavedSearch())->recordsWithFilter($filter);
 
         return view('welcome', [
             'error'         => $request->input('error'),
@@ -50,16 +59,20 @@ class IndexController extends Controller
             return redirect('/logout');
         }
 
+        /** @var Person $person */
         $person = (new Person())->lookupWithFilter("Slug = '$slugOrId'");
         if (!$person) {
             abort(404);
         }
 
+        $personData = $user ? $person->toDataFor($user) : $person->toData();
+
         return view('person', [
-            'error'   => $request->input('error'),
-            'success' => $request->input('success'),
-            'person'  => $person,
-            'user'    => $user,
+            'error'      => $request->input('error'),
+            'success'    => $request->input('success'),
+            'person'     => $person,
+            'user'       => $user,
+            'personData' => $personData,
         ]);
     }
 
