@@ -11,6 +11,11 @@ class SavedSearch extends Airtable
         return isset($this->fields->{'Name'}) ? $this->fields->{'Name'} : null;
     }
 
+    public function isPrivate()
+    {
+        return isset($this->fields->{'Private'}) ? $this->fields->{'Private'} : null;
+    }
+
     public function slug()
     {
         return isset($this->fields->{'Slug'}) ? $this->fields->{'Slug'} : null;

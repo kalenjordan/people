@@ -3,3 +3,8 @@ AND(FIND("Founder", {Public Tags}), FIND("eCommerce", {Public Tags}), FIND("SaaS
 OR(FIND("Houston", {Public Tags}), FIND("Dallas", {Public Tags}), FIND("Austin", {Public Tags}), FIND("Texas", {Public Tags}))
 
 AND(FIND("Shopify", {Public Tags}), OR(FIND("Retailer", {Public Tags}), FIND("Brand", {Public Tags})))
+
+OR(
+    FIND("Likes To Hike tagged by Kalen", {Private Tags}),
+    FIND("Kinda Interested Hiking tagged by Kalen", {Private Tags})
+)

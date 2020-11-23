@@ -16,7 +16,7 @@
         <div class="relative max-w-7xl mx-auto">
             <div class="mt-12 grid gap-12 max-w-lg mx-auto lg:grid-cols-3 lg:max-w-none">
                 @foreach ($savedSearches as $savedSearch)
-                    <div class="flex flex-col rounded-lg shadow-lg overflow-hidden hover:scale-105 transform duration-150">
+                    <div class="flex flex-col rounded-lg shadow-lg overflow-hidden hover:scale-105 transform duration-150 {{ $savedSearch->isPrivate() ? 'opacity-50 border-4 border-dashed' : '' }}">
                         <div class="flex-1 bg-white p-6 flex flex-col justify-between">
                             <a href="{{ $savedSearch->url() }}">
                                 <div class="flex-1">
