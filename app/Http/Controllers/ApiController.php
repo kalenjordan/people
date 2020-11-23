@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Person;
+use App\PublicTag;
 use App\Thing;
 use App\User;
 use App\Util;
@@ -156,7 +158,7 @@ class ApiController extends Controller
      * @return array
      * @throws \Exception
      */
-    public function things(Request $request)
+    public function publicTags(Request $request)
     {
         $query = $request->input('query');
 
@@ -165,17 +167,55 @@ class ApiController extends Controller
             "maxRecords"      => 10,
             "filterByFormula" => "FIND(LOWER('$query'), LOWER(Name)) > 0",
         );
-        $things = (new Thing())->getRecords($params);
+        $tags = (new PublicTag())->getRecords($params);
 
         $data = [];
-        foreach ($things as $thing) {
-            /** @var Thing $thing */
-            $data[] = [
-                'id'   => $thing->id(),
-                'name' => $thing->name(),
-            ];
+        foreach ($tags as $tag) {
+            /** @var PublicTag $tag */
+            $data[] = $tag->toData();
         }
 
         return $data;
+    }
+
+    public function personPublicTag(Request $request, $slug)
+    {
+        /** @var Person $person */
+        $person = (new Person())->lookupWithFilter("Slug = '$slug'");
+        if (!$person) {
+            abort(404);
+        }
+
+        $tagId = $request->input('tag');
+        $newTag = $request->input('new_tag');
+        if ($tagId) {
+            $tag = (new PublicTag())->load($tagId);
+            if (!$tag) {
+                throw new \Exception("Couldn't find tag by ID: $tagId");
+            }
+        } elseif ($newTag) {
+            $tag = (new PublicTag())->create([
+                'Name' => $newTag,
+            ]);
+        }
+
+        $tags = $person->publicTagIds();
+        if (($key = array_search($tag->id(), $tags)) !== false) {
+            unset($tags[$key]);
+            $tags = array_values($tags);
+            $message = "Removed tag";
+        } else {
+            $tags[] = $tag->id();
+            $message = "Added tag";
+        }
+        $person->save([
+            'Public Tags' => $tags,
+        ]);
+
+        return [
+            'success' => true,
+            'message' => $message,
+            'person'  => $person->toData(),
+        ];
     }
 }

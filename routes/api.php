@@ -22,4 +22,5 @@ Route::get('/newsletter-subscribe', 'ApiController@newsletterSubscribe');
 Route::get('/geocode', 'ApiController@geocode');
 Route::get('/geocode-delete', 'ApiController@geocodeDelete');
 
-Route::get('/things', 'ApiController@things');
+Route::get('/public-tags', 'ApiController@publicTags');
+Route::get('/people/{slug}/public-tag', 'ApiController@personPublicTag');

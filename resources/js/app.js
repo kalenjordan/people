@@ -7,6 +7,7 @@ window.Vue.use(require('vue-shortkey'), {prevent: ['input', 'textarea']});
 
 import InstantSearch from 'vue-instantsearch';
 window.Vue.use(InstantSearch);
+window.Events = new window.Vue();
 
 const files = require.context('./', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
@@ -34,7 +35,6 @@ const app = new Vue({
             focusMode: false,
             showSearch: false,
             successMessage: null,
-            isAddingPublicTag: null,
         }
     },
     methods: {
@@ -102,16 +102,6 @@ const app = new Vue({
                     activeSearchResult.classList.remove('active');
                     next.classList.add('active');
                 }
-            }
-        },
-        togglePublicTag() {
-            this.isAddingPublicTag = ! this.isAddingPublicTag;
-            if (this.isAddingPublicTag) {
-                this.$nextTick(() => {
-                    if (document.querySelector('.add-public-tag input.multiselect__input')) {
-                        document.querySelector('.add-public-tag input.multiselect__input').focus();
-                    }
-                });
             }
         },
         showKeyboardShortcuts() {

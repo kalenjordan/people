@@ -16,6 +16,11 @@ class Person extends Airtable
         return isset($this->fields->{'Slug'}) ? $this->fields->{'Slug'} : null;
     }
 
+    public function publicTagIds()
+    {
+        return isset($this->fields->{'Public Tags'}) ? $this->fields->{'Public Tags'} : [];
+    }
+
     public function publicTagNames()
     {
         return isset($this->fields->{'Public Tag Names'}) ? $this->fields->{'Public Tag Names'} : [];
@@ -80,10 +85,12 @@ class Person extends Airtable
     public function toData()
     {
         return [
-            'id'    => $this->id(),
-            'url'   => $this->url(),
-            'name'  => $this->name(),
-            'avatar' => $this->avatar(),
+            'id'          => $this->id(),
+            'url'         => $this->url(),
+            'slug'        => $this->slug(),
+            'name'        => $this->name(),
+            'avatar'      => $this->avatar(),
+            'public_tags' => $this->publicTagNames(),
         ];
     }
 }

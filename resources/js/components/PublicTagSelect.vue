@@ -2,8 +2,8 @@
     <div>
         <multiselect track-by="id" :loading="isLoading" @select="selectAction" @search-change="asyncFind"
                      :multiple="false" v-model="selectedRecord" :options="options" placeholder="Select a tag"
-                     open-direction="top"
-                     selectLabel="" label="name" :class="{'opacity-50' : isProcessing}">
+                     open-direction="top" @tag="tag" :taggable="true" tag-position="bottom"
+                     selectLabel="" deselectLabel="" label="name" :class="{'opacity-50' : isProcessing}">
         </multiselect>
     </div>
 </template>
@@ -15,21 +15,12 @@
     Vue.component('multiselect', Multiselect);
 
     export default {
-        props: ['apiKey', 'apiUrl', 'record'],
+        props: ['apiKey', 'apiUrl', 'person'],
         components: {Multiselect},
         data() {
             return {
                 selectedRecord: {},
-                options: [
-                    {
-                        'name': 'Austin',
-                        'id': 'austin',
-                    },
-                    {
-                        'name': 'Founder',
-                        'id': 'founder',
-                    },
-                ],
+                options: [],
                 isLoading: false,
                 isProcessing: false,
             }
@@ -41,16 +32,15 @@
         methods: {
             asyncFind(query) {
                 this.isLoading = true;
-                axios.get(this.apiUrl + '/list?api_key=' + this.apiKey).then((response) => {
+                axios.get('/api/public-tags?api_key=' + this.apiKey).then((response) => {
                     this.options = response.data;
                     this.isLoading = false;
                 });
             },
             selectAction(event) {
-                console.log(event.id);
-                console.log(event.id);
+                console.log('Selected ' + event.id);
 
-                let url = '/api/public-tags?api_key=' + this.apiKey + '&action=' + event.id + '&record=' + this.record.id;
+                let url = '/api/people/' + this.person.slug + '/public-tag?api_key=' + this.apiKey + '&tag=' + event.id;
 
                 this.isProcessing = true;
                 axios.get(url).then((response) => {
@@ -58,11 +48,25 @@
                     if (response.data.message) {
                         window.Events.$emit('success', response.data.message);
                     }
-                    if (response.data.record) {
-                        window.Events.$emit('air-list-record-update', response.data.record);
+                    if (response.data.person) {
+                        window.Events.$emit('person-updated', response.data.person);
                     }
                 });
-                },
+            },
+            tag(tagName) {
+                let url = '/api/people/' + this.person.slug + '/public-tag?api_key=' + this.apiKey + '&new_tag=' + tagName;
+
+                this.isProcessing = true;
+                axios.get(url).then((response) => {
+                    this.isProcessing = false;
+                    if (response.data.message) {
+                        window.Events.$emit('success', response.data.message);
+                    }
+                    if (response.data.person) {
+                        window.Events.$emit('person-update', response.data.person);
+                    }
+                });
+            }
         }
     }
 </script>
@@ -74,5 +78,6 @@
         background-color: #fce96a;
         color: #252f3f;
     }
+
     /*your styles*/
 </style>
