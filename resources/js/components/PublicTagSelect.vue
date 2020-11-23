@@ -32,7 +32,7 @@
         methods: {
             asyncFind(query) {
                 this.isLoading = true;
-                axios.get('/api/public-tags?api_key=' + this.apiKey).then((response) => {
+                axios.get('/api/public-tags?api_key=' + this.apiKey + '&query=' + query).then((response) => {
                     this.options = response.data;
                     this.isLoading = false;
                 });
@@ -63,7 +63,7 @@
                         window.Events.$emit('success', response.data.message);
                     }
                     if (response.data.person) {
-                        window.Events.$emit('person-update', response.data.person);
+                        window.Events.$emit('person-updated', response.data.person);
                     }
                 });
             }
