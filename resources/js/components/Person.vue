@@ -13,6 +13,10 @@
                 this.public_tags = person.public_tags;
                 this.isAddingPublicTag = false;
             });
+            document.addEventListener('keydown', (e) => {
+                let activeElement = document.activeElement;
+                this.hotkeys(e, activeElement);
+            });
         },
         methods: {
             togglePublicTag() {
@@ -23,6 +27,11 @@
                             document.querySelector('.add-public-tag input.multiselect__input').focus();
                         }
                     });
+                }
+            },
+            hotkeys(e, activeElement) {
+                if (e.code === 'Escape') {
+                    this.isAddingPublicTag = false;
                 }
             },
         }

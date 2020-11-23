@@ -26,13 +26,15 @@
                           class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg m-1">
                         @{{ tag }}
                     </span>
-                    <span
-                        v-shortkey="['t']" @shortkey="togglePublicTag"
-                        @click="togglePublicTag"
-                        class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg m-1">
-                        @include('svg.icon-plus', ['classes' => 'h-3 w-3 inline mr-1 text-gray-800'])
-                        New Tag
-                    </span>
+                    @if ($user)
+                        <a href="javascript://"
+                            v-shortkey="['t']" @shortkey="togglePublicTag"
+                            @click="togglePublicTag"
+                            class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg -ml-1 m-1">
+                            @include('svg.icon-plus', ['classes' => 'h-3 w-3 inline mr-1 text-gray-800'])
+                            New Tag
+                        </a>
+                    @endif
                 </div>
             </div>
 
