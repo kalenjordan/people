@@ -26,11 +26,17 @@
                         {{ $tag }}
                     </span>
                 @endforeach
+                <span
+                    v-shortkey="['t']" @shortkey="togglePublicTag"
+                    @click="togglePublicTag" class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-gray-100 text-gray-800 text-lg m-1">
+                    @include('svg.icon-plus', ['classes' => 'h-3 w-3 inline mr-1 text-gray-800'])
+                    New Tag
+                </span>
             </div>
         </div>
 
         @if ($user)
-            <div>
+            <div v-if="isAddingPublicTag" class="add-public-tag max-w-sm mx-auto mt-8">
                 <public-tag-select
                     :record='{!! \App\Util::json($person->toData()) !!}'
                     :api-key="'{{ $user->apiKey() }}'" :api-url="'/api/hero-action'">

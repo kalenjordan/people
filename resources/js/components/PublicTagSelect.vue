@@ -46,85 +46,23 @@
                     this.isLoading = false;
                 });
             },
-            emailHeroAboutContract() {
-                window.open('mailto:' + this.record.hero_email +
-                    '?subject=Hey ' + this.record.first_name
-                );
-            },
-            emailClientAboutContract() {
-                window.open('mailto:' + this.record.client_email +
-                    '?subject=Contract #' + this.record.friendly_id + ' with ' + this.record.hero_name
-                );
-            },
-            emailClientAboutJob() {
-                window.open('mailto:' + this.record.client_email +
-                    '?subject=Job #' + this.record.friendly_id + ' - ' + this.record.role
-                );
-            },
-            emailClientAboutMatch() {
-                window.open('mailto:' + this.record.client_match_emails.join(',') +
-                    '?subject=#' + this.record.friendly_id + ' - ' + this.record.hero_name
-                );
-            },
-            searchGmailByFriendlyId() {
-                window.open(
-                    'https://mail.google.com/mail/u/0/#search/' + this.record.friendly_id
-                );
-            },
-            emailHeroAboutPayment() {
-                window.open('mailto:' + this.record.hero_email +
-                    '?subject=Payment #' + this.record.friendly_id
-                );
-            },
-            email() {
-                window.open('mailto:' + this.record.email +
-                    '?subject=Hey ' + this.record.first_name
-                );
-            },
-            emailClient() {
-                window.open('mailto:' + this.record.client_email +
-                    '?subject=Hey ' + this.record.client_first_name
-                );
-            },
-            emailHero() {
-                window.open('mailto:' + this.record.hero_email +
-                    '?subject=Hey ' + this.record.hero_first_name
-                );
-            },
-            removeRecord() {
-                window.Events.$emit('air-list-record-remove', this.record);
-            },
-            editJob() {
-                document.location = this.record.client_edit_url;
-            },
-            editJobAsAdmin() {
-                document.location = '/admin/jobs/' + this.record.id;
-            },
-            viewJob() {
-                document.location = this.record.url;
-            },
-            viewUserRecord() {
-                document.location = '/admin/users/' + this.record.user_id;
-            },
             selectAction(event) {
-                if (event.id.substr(0, 3) === 'js_') {
-                    let methodName = event.id.substr(3);
-                    this[methodName]();
-                } else if (event.id.substr(0, 7) === 'action_') {
-                    let url = this.apiUrl + '/execute?api_key=' + this.apiKey + '&action=' + event.id + '&record=' + this.record.id;
+                console.log(event.id);
+                console.log(event.id);
 
-                    this.isProcessing = true;
-                    axios.get(url).then((response) => {
-                        this.isProcessing = false;
-                        if (response.data.message) {
-                            window.Events.$emit('success', response.data.message);
-                        }
-                        if (response.data.record) {
-                            window.Events.$emit('air-list-record-update', response.data.record);
-                        }
-                    });
-                }
-            },
+                let url = '/api/public-tags?api_key=' + this.apiKey + '&action=' + event.id + '&record=' + this.record.id;
+
+                this.isProcessing = true;
+                axios.get(url).then((response) => {
+                    this.isProcessing = false;
+                    if (response.data.message) {
+                        window.Events.$emit('success', response.data.message);
+                    }
+                    if (response.data.record) {
+                        window.Events.$emit('air-list-record-update', response.data.record);
+                    }
+                });
+                },
         }
     }
 </script>
@@ -132,5 +70,9 @@
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style>
+    .multiselect__option.multiselect__option--highlight {
+        background-color: #fce96a;
+        color: #252f3f;
+    }
     /*your styles*/
 </style>

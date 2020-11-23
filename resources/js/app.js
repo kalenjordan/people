@@ -34,7 +34,7 @@ const app = new Vue({
             focusMode: false,
             showSearch: false,
             successMessage: null,
-            showAddPerson: null,
+            isAddingPublicTag: null,
         }
     },
     methods: {
@@ -71,6 +71,7 @@ const app = new Vue({
                 if (activeElement.getAttribute('type') === 'search') {
                     this.toggleSearch();
                 }
+                this.isAddingPublicTag = false;
                 activeElement.blur();
             }
             if (e.code === 'Enter' && e.metaKey) {
@@ -101,6 +102,16 @@ const app = new Vue({
                     activeSearchResult.classList.remove('active');
                     next.classList.add('active');
                 }
+            }
+        },
+        togglePublicTag() {
+            this.isAddingPublicTag = ! this.isAddingPublicTag;
+            if (this.isAddingPublicTag) {
+                this.$nextTick(() => {
+                    if (document.querySelector('.add-public-tag input.multiselect__input')) {
+                        document.querySelector('.add-public-tag input.multiselect__input').focus();
+                    }
+                });
             }
         },
         showKeyboardShortcuts() {
