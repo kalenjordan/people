@@ -5,10 +5,13 @@
             return {
                 isAddingPublicTag: null,
                 public_tags: {},
+                private_tags: {},
             }
         },
         mounted() {
             this.public_tags = this.person.public_tags;
+            this.private_tags = this.person.private_tags;
+
             window.Events.$on('person-updated', (person) => {
                 this.public_tags = person.public_tags;
                 this.isAddingPublicTag = false;

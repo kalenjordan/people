@@ -26,24 +26,58 @@ class Person extends Airtable
         return isset($this->fields->{'Public Tag Names'}) ? $this->fields->{'Public Tag Names'} : [];
     }
 
+    public function privateTagsFor(User $user)
+    {
+        $tags = $this->_privateTags();
+
+        $count = count($tags);
+        for ($i = 0; $i < $count; $i++) {
+            /** @var PrivateTag $tag */
+            $tag = $tags[$i];
+            if ($tag->userId() != $user->id()) {
+                unset($tags[$i]);
+            }
+        }
+
+        $tags = array_values($tags);
+
+        return $tags;
+    }
+
+    public function privateTagNames()
+    {
+        return isset($this->fields->{'Private Tag Names'}) ? $this->fields->{'Private Tag Names'} : [];
+    }
+
+    public function privateTagUserIds()
+    {
+        return isset($this->fields->{'Private Tag Users'}) ? $this->fields->{'Private Tag Users'} : [];
+    }
+
+    protected function _privateTags()
+    {
+        $names = $this->privateTagNames();
+        $userIds = $this->privateTagUserIds();
+        $tags = [];
+
+        for ($i = 0; $i < count($names); $i++) {
+            $tags[] = new PrivateTag([
+                'Name' => $names[$i],
+                'User' => [$userIds[$i]],
+            ]);
+        }
+
+//        usort($tags, function (PrivateTag $a, PrivateTag $b) {
+//            return $a->clientSortOrder() > $b->clientSortOrder();
+//        });
+
+        return $tags;
+    }
+
+
     public function description()
     {
         return isset($this->fields->{'Description'}) ? $this->fields->{'Description'} : null;
-    }
-
-    public function price()
-    {
-        return isset($this->fields->{'Price'}) ? $this->fields->{'Price'} : 0;
-    }
-
-    public function priceFormatted()
-    {
-        return number_format($this->price(), 2);
-    }
-
-    public function isEnabled()
-    {
-        return isset($this->fields->{'Enabled'}) ? true : false;
     }
 
     public function url()
@@ -92,5 +126,21 @@ class Person extends Airtable
             'avatar'      => $this->avatar(),
             'public_tags' => $this->publicTagNames(),
         ];
+    }
+
+    public function toDataFor(User $user)
+    {
+        $data = $this->toData();
+        $privateTags = $this->privateTagsFor($user);
+
+        $privateTagsData = [];
+        foreach ($privateTags as $privateTag) {
+            /** @var PrivateTag $privateTag */
+            $privateTagsData[] = $privateTag->toData();
+        }
+
+        $data['private_tags'] = $privateTagsData;
+
+        return $data;
     }
 }

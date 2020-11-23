@@ -14,8 +14,13 @@ class Airtable
     public function __construct($data = null)
     {
         if (isset($data)) {
-            $this->id = isset($data->id) ? $data->id : null;
-            $this->fields = isset($data->fields) ? $data->fields : null;
+            if (is_array($data)) {
+                $this->id = isset($data['id']) ? $data['id'] : null;
+                $this->fields = isset($data) ? (object)$data : null;
+            } else {
+                $this->id = isset($data->id) ? $data->id : null;
+                $this->fields = isset($data->fields) ? $data->fields : null;
+            }
         }
     }
 
