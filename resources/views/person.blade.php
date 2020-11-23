@@ -22,7 +22,7 @@
                     {{ $person->name() }}
                 </h2>
                 <div class="mb-2" v-if="!isAddingPrivateTag">
-                    <span v-for="tag in public_tags"
+                    <span v-for="tag in public_tags" :class="{ 'opacity-50' : tagsProcessing }"
                           class="inline-flex items-center px-4 py-1 rounded-full font-medium bg-yellow-200 text-yellow-800 text-lg m-1">
                         @{{ tag }}
                     </span>

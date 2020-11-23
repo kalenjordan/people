@@ -5,6 +5,7 @@
             return {
                 isAddingPublicTag: null,
                 isAddingPrivateTag: null,
+                tagsProcessing: false,
                 public_tags: {},
                 private_tags: {},
             }
@@ -16,6 +17,10 @@
             window.Events.$on('person-updated', (person) => {
                 this.public_tags = person.public_tags;
                 this.private_tags = person.private_tags;
+                this.tagsProcessing = false;
+            });
+            window.Events.$on('hide-tag-select', () => {
+                this.tagsProcessing = true;
                 this.isAddingPublicTag = false;
                 this.isAddingPrivateTag = false;
             });

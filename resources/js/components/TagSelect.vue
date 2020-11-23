@@ -42,10 +42,12 @@
             },
             select(event) {
                 let url = '/api/people/' + this.person.slug + '/' + this.type + '-tag?api_key=' + this.apiKey + '&tag=' + event.id;
-                this.isProcessing = true;
+                // this.isProcessing = true;
 
+                window.Events.$emit('hide-tag-select');
+
+                // this.isProcessing = false;
                 axios.get(url).then((response) => {
-                    this.isProcessing = false;
                     if (response.data.person) {
                         window.Events.$emit('person-updated', response.data.person);
                     }

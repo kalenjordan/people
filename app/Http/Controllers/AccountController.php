@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Person;
 use App\Twitter;
 use App\User;
+use App\Util;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -144,6 +145,36 @@ class AccountController extends Controller
             ],
             'Description' => $profile['description'],
             'Slug'        => $name,
+        ];
+
+        $person = (new Person())->create($data);
+        $person->saveToSearchIndex();
+        return redirect($person->url());
+    }
+
+    public function personNewFromLinkedIn(Request $request)
+    {
+        /** @var User $user */
+        $user = $request->session()->get('user');
+        if (!$user) {
+            return redirect("/auth?redirect=" . urlencode($request->url()));
+        }
+
+        $name = $request->input('name');
+        $linkedInUrl = $request->input('url');
+        $avatar = $request->input('avatar');
+
+        $slug = Util::slugify($name);
+
+        $data = [
+            'Name'        => $name,
+            'LinkedIn'     => $linkedInUrl,
+            'Avatar'      => [
+                [
+                    'url' => $avatar,
+                ]
+            ],
+            'Slug'        => $slug,
         ];
 
         $person = (new Person())->create($data);

@@ -16,6 +16,7 @@
         "fideloper/proxy": "^4.0",
         "graham-campbell/markdown": "^11.2",
         "j7mbo/twitter-api-php": "^1.0",
+        "laravel/dusk": "^5.5",
         "laravel/framework": "5.7.*",
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^1.0",

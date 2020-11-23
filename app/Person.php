@@ -16,6 +16,11 @@ class Person extends Airtable
         return isset($this->fields->{'Slug'}) ? $this->fields->{'Slug'} : null;
     }
 
+    public function linkedInUrl()
+    {
+        return isset($this->fields->{'LinkedIn'}) ? $this->fields->{'LinkedIn'} : null;
+    }
+
     public function publicTagIds()
     {
         return isset($this->fields->{'Public Tags'}) ? $this->fields->{'Public Tags'} : [];

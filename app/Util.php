@@ -24,6 +24,30 @@ class Util
         return env('APP_NAME');
     }
 
+    public static function linkedinUsername()
+    {
+        return env('LINKEDIN_USERNAME');
+    }
+
+    public static function linkedinPassword()
+    {
+        return env('LINKEDIN_PASSWORD');
+    }
+
+    public static function parseLinkedInField($linkedIn)
+    {
+        if (strpos($linkedIn, "http") === 0) {
+            return $linkedIn;
+        }
+
+        if (strpos($linkedIn, '/in/') !== false) {
+            $parts = explode('/in/', $linkedIn);
+            return "https://linkedin.com/in/" . $parts[1];
+        }
+
+        return "Bad linkedin format: $linkedIn";
+    }
+
     public static function svgLogo()
     {
         return env('LOGO_SVG');
@@ -86,5 +110,13 @@ class Util
     public static function algoliaPrivateKey()
     {
         return env('ALGOLIA_PRIVATE_KEY');
+    }
+
+    public static function slugify($string)
+    {
+        $string = str_replace(" ", "-", $string);
+        $string = strtolower($string);
+
+        return $string;
     }
 }
