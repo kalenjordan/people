@@ -270,11 +270,15 @@ class ApiController extends Controller
         $tagId = $request->input('tag');
         $newTag = $request->input('new_tag');
         if ($newTag) {
-            $tag = (new PrivateTag())->create([
+            (new PrivateTag())->create([
                 'Name'   => $newTag,
                 'User'   => [$user->id()],
-                'Person' => [$person->id()],
+                'People' => [$person->id()],
             ]);
+
+            // Refresh
+            $person = $person->load($person->id());
+
             return [
                 'success' => true,
                 'person'  => $person->toDataFor($user),
