@@ -5,7 +5,8 @@
             return {
                 isAddingPublicTag: null,
                 isAddingPrivateTag: null,
-                tagsProcessing: false,
+                publicTagsProcessing: false,
+                privateTagsProcessing: false,
                 public_tags: {},
                 private_tags: {},
             }
