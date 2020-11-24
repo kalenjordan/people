@@ -27,10 +27,10 @@ class AccountController extends Controller
             return redirect("/auth?redirect=" . $request->path());
         }
 
-        $key = SearchClient::generateSecuredApiKey(Util::algoliaPublicKeyForAdmin(), [
-            'filters' => "user:all"
-        ]);
-        die($key);
+//        $key = SearchClient::generateSecuredApiKey(Util::algoliaPublicKeyForAdmin(), [
+//            'filters' => "user:all"
+//        ]);
+//        die($key);
 
         $key = SearchClient::generateSecuredApiKey(Util::algoliaPublicKeyForAdmin(), [
             'filters' => "user:all OR user:{$user->id()}"
