@@ -14,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    {{--<link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>--}}
+    <link rel="shortcut icon" type="image/svg" href="/img/{{ \App\Util::isProduction() ? "logo.svg" : "logo-gray.svg" }}"/>
 </head>
 <body style="font-family: 'Xanh Mono', monospace;">
     <div id="app" class="bg-yellow-50">
@@ -60,7 +60,7 @@
                         <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
                             <div class="flex items-center justify-between w-full md:w-auto">
                                 <a href="/" v-shortkey="['h']" @shortkey="clickLink($event)">
-                                    @include('svg.logo', ['classes' => 'h-8 w-auto sm:h-10 text-red-500 hover:scale-105 transform duration-150'])
+                                    @include('svg.logo', ['classes' => 'h-8 w-auto sm:h-10 hover:scale-105 transform duration-150 ' . (\App\Util::isProduction() ? "text-red-500" : "text-gray-400") ])
                                 </a>
                                 <div class="-mr-2 flex items-center md:hidden">
                                     <button @click="toggleMobileMenu" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-red-400 hover:text-red-500 hover:bg-red-100 focus:outline-none focus:bg-red-100 focus:text-red-500 transition duration-150 ease-in-out">
