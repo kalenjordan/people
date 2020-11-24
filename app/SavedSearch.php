@@ -82,6 +82,19 @@ class SavedSearch extends Airtable
         return "all";
     }
 
+    public function userHasAccess($user)
+    {
+        if (! $this->isPrivate()) {
+            return true;
+        }
+
+        if (! $user) {
+            return false;
+        }
+
+        return $this->userId() == $user->id();
+    }
+
     public function searchTitle()
     {
         return "Saved Search: " . $this->name();

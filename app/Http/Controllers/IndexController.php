@@ -84,11 +84,17 @@ class IndexController extends Controller
      */
     public function savedSearch(Request $request, $slugOrId)
     {
+        /** @var User $user */
         $user = $request->session()->get('user');
 
+        /** @var SavedSearch $savedSearch */
         $savedSearch = (new SavedSearch())->lookupWithFilter("Slug = '$slugOrId'");
         if (!$savedSearch) {
             abort(404);
+        }
+
+        if (!$savedSearch->userHasAccess($user)) {
+            abort(403);
         }
 
         $people = $savedSearch->people();
