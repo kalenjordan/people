@@ -12,6 +12,7 @@ Route::post('/account/settings', 'AccountController@settingsPost');
 Route::get('/account/people', 'AccountController@personList');
 Route::get('/account/people/new', 'AccountController@personNew');
 Route::post('/account/people/new', 'AccountController@personNewPost');
+Route::get('/account/people/new-from-twitter', 'AccountController@personNewFromTwitter');
 Route::get('/account/people/new-from-linkedin', 'AccountController@personNewFromLinkedIn');
 Route::get('/account/people/{id}', 'AccountController@personEdit');
 Route::post('/account/people/{id}', 'AccountController@personEditPost');

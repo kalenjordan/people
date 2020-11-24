@@ -149,6 +149,38 @@ class AccountController extends Controller
 
         $person = (new Person())->create($data);
         $person->saveToSearchIndex();
+
+        return redirect($person->url());
+    }
+
+    public function personNewFromTwitter(Request $request)
+    {
+        /** @var User $user */
+        $user = $request->session()->get('user');
+        if (!$user) {
+            return redirect("/auth?redirect=" . urlencode($request->url()));
+        }
+
+        $twitterUrl = $request->input('url');
+        $parts = explode('/', $twitterUrl);
+        $twitterUsername = $parts[count($parts) - 1];
+
+        $profile = Twitter::getProfile($twitterUsername);
+
+        $data = [
+            'Name'        => $profile['name'],
+            'Twitter'     => $twitterUsername,
+            'Avatar'      => [
+                [
+                    'url' => $profile['avatar'],
+                ]
+            ],
+            'Description' => $profile['description'],
+            'Slug'        => $twitterUsername,
+        ];
+
+        $person = (new Person())->create($data);
+        $person->saveToSearchIndex();
         return redirect($person->url());
     }
 
