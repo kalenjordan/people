@@ -17,12 +17,18 @@
             window.Events.$on('person-updated', (person) => {
                 this.public_tags = person.public_tags;
                 this.private_tags = person.private_tags;
-                this.tagsProcessing = false;
+                this.publicTagsProcessing = false;
+                this.privateTagsProcessing = false;
             });
             window.Events.$on('hide-tag-select', () => {
-                this.tagsProcessing = true;
                 this.isAddingPublicTag = false;
                 this.isAddingPrivateTag = false;
+            });
+            window.Events.$on('public-tags-processing', () => {
+                this.publicTagsProcessing = true;
+            });
+            window.Events.$on('private-tags-processing', () => {
+                this.privateTagsProcessing = true;
             });
             document.addEventListener('keydown', (e) => {
                 let activeElement = document.activeElement;

@@ -45,6 +45,7 @@
                 // this.isProcessing = true;
 
                 window.Events.$emit('hide-tag-select');
+                window.Events.$emit(this.type + '-tags-processing');
 
                 // this.isProcessing = false;
                 axios.get(url).then((response) => {
@@ -56,6 +57,7 @@
             tag(tagName) {
                 let url = '/api/people/' + this.person.slug + '/' + this.type + '-tag?api_key=' + this.apiKey + '&new_tag=' + tagName;
                 window.Events.$emit('hide-tag-select');
+                window.Events.$emit(this.type + '-tags-processing');
 
                 axios.get(url).then((response) => {
                     if (response.data.person) {

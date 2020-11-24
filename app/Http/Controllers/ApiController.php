@@ -311,6 +311,10 @@ class ApiController extends Controller
             'People' => $people,
         ]);
 
+        if (empty($people)) {
+            $tag->delete();
+        }
+
         // Refresh
         $person = $person->load($person->id());
 
