@@ -7,6 +7,7 @@ use Algolia\AlgoliaSearch\SearchIndex;
 use App\Airtable;
 use App\Blog;
 use App\Person;
+use App\SavedSearch;
 use App\User;
 use App\Util;
 use Illuminate\Console\Command;
@@ -22,7 +23,7 @@ class AlgoliaIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'search:index {--limit=} {--v} {--people} {--all} {--clear}';
+    protected $signature = 'search:index {--limit=} {--v} {--people} {--saved-searches} {--all} {--clear}';
 
     /**
      * The console command description.
@@ -97,6 +98,11 @@ class AlgoliaIndex extends Command
         if ($this->shouldIndex('people')) {
             $persons = (new Person())->getRecords();
             $this->_indexRecords($persons, 'people');
+        }
+
+        if ($this->shouldIndex('saved-searches')) {
+            $savedSearches = (new SavedSearch())->getRecords();
+            $this->_indexRecords($savedSearches, 'saved searches');
         }
 
         return;

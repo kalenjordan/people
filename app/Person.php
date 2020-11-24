@@ -110,6 +110,11 @@ class Person extends Airtable
         return new Date($date);
     }
 
+    public function searchTitle()
+    {
+        return "Person: " . $this->name();
+    }
+
     public function toSearchIndexArray()
     {
         return [
@@ -118,6 +123,7 @@ class Person extends Airtable
             'search_title' => $this->searchTitle(),
             'url'          => $this->url(),
             'avatar'       => $this->avatar(),
+            'user'         => 'all',
         ];
     }
 

@@ -20,8 +20,8 @@
     <div id="app" class="bg-yellow-50">
         <div class="bg-red-100" v-if="showSearch">
             <div class="p-4 max-w-lg mx-auto text-center">
-                <search-component class="inline-block"
-                                  :app-id="'{{ Util::algoliaAppId()  }}'" :public-api-key="'{{ Util::algoliaPublicKeyFor(isset($user) ? $user : null) }}'"></search-component>
+                <search-component class="inline-block" :app-id="'{{ \App\Util::algoliaAppId()  }}'"
+                                  :public-api-key="'{{ \App\Util::algoliaPublicKeyFor(isset($user) ? $user : null) }}'"></search-component>
                 <a href="javascript://" class="hidden"
                    @click="toggleSearch" v-shortkey="['esc']" @shortkey="showSearch = false" v-tooltip="'esc'"
                 >Close</a>

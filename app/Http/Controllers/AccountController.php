@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Algolia\AlgoliaSearch\SearchClient;
 use App\Person;
 use App\Twitter;
 use App\User;
@@ -20,10 +21,24 @@ class AccountController extends Controller
      */
     public function settings(Request $request)
     {
+        /* @var User $user */
         $user = $request->session()->get('user');
         if (!$user) {
             return redirect("/auth?redirect=" . $request->path());
         }
+
+        $key = SearchClient::generateSecuredApiKey(Util::algoliaPublicKeyForAdmin(), [
+            'filters' => "user:all"
+        ]);
+        die($key);
+
+        $key = SearchClient::generateSecuredApiKey(Util::algoliaPublicKeyForAdmin(), [
+            'filters' => "user:all OR user:{$user->id()}"
+        ]);
+
+        $user->save([
+            'Algolia API Key' => $key
+        ]);
 
         $user = (new User())->load($user->id());
 

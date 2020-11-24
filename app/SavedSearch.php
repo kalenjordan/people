@@ -42,17 +42,10 @@ class SavedSearch extends Airtable
         return isset($this->fields->{'Filter'}) ? $this->fields->{'Filter'} : null;
     }
 
-    public function price()
+    public function userId()
     {
-        return isset($this->fields->{'Price'}) ? $this->fields->{'Price'} : 0;
+        return isset($this->fields->{'User'}[0]) ? $this->fields->{'User'}[0] : null;
     }
-
-    public function priceFormatted()
-    {
-        return number_format($this->price(), 2);
-    }
-
-
 
     public function people()
     {
@@ -80,15 +73,29 @@ class SavedSearch extends Airtable
         return isset($this->fields->{'Avatar'}[0]->url) ? $this->fields->{'Avatar'}[0]->url : null;
     }
 
+    public function userFacetForSearch()
+    {
+        if ($this->isPrivate()) {
+            return $this->userId();
+        }
+
+        return "all";
+    }
+
+    public function searchTitle()
+    {
+        return "Saved Search: " . $this->name();
+    }
+
     public function toSearchIndexArray()
     {
         return [
-            'type'         => 'person',
+            'type'         => 'saved-search',
             'object_id'    => $this->searchIndexId(),
             'search_title' => $this->searchTitle(),
             'url'          => $this->url(),
             'avatar'       => $this->avatar(),
+            'user'         => $this->userFacetForSearch(),
         ];
     }
-
 }

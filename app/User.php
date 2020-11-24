@@ -45,6 +45,11 @@ class User extends Airtable
         return isset($this->fields->{'API Key'}) ? $this->fields->{'API Key'} : null;
     }
 
+    public function algoliaApiKey()
+    {
+        return isset($this->fields->{'Algolia API Key'}) ? $this->fields->{'Algolia API Key'} : null;
+    }
+
     public function isAdmin()
     {
         return Util::isAdmin($this);
@@ -57,7 +62,7 @@ class User extends Airtable
 
     public function searchTitle()
     {
-        return $this->name();
+        return "User: " . $this->name();
     }
 
     public function searchIndexId()
@@ -75,7 +80,7 @@ class User extends Airtable
             'name'         => $this->name(),
             'about'        => $this->about(),
             'location'     => $this->location(),
-            'public'       => false,
+            'user'         => Util::adminUserId(),
         ];
     }
 
@@ -114,8 +119,8 @@ class User extends Airtable
         $results = [];
         for ($i = 0; $i < count($ids); $i++) {
             $results[] = [
-                'id'     => $ids[$i],
-                'name'   => $names[$i],
+                'id'   => $ids[$i],
+                'name' => $names[$i],
             ];
         }
 
