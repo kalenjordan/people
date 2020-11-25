@@ -210,6 +210,9 @@ class ApiController extends Controller
             unset($tags[$key]);
             $tags = array_values($tags);
             $message = "Removed tag";
+            if ($tag->count() <= 1) {
+                $tag->delete();
+            }
         } else {
             $tags[] = $tag->id();
             $message = "Added tag";

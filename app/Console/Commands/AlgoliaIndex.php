@@ -7,6 +7,8 @@ use Algolia\AlgoliaSearch\SearchIndex;
 use App\Airtable;
 use App\Blog;
 use App\Person;
+use App\PrivateTag;
+use App\PublicTag;
 use App\SavedSearch;
 use App\User;
 use App\Util;
@@ -23,7 +25,9 @@ class AlgoliaIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'search:index {--limit=} {--v} {--people} {--saved-searches} {--all} {--clear}';
+    protected $signature = 'search:index {--limit=} {--v} {--all} {--clear}
+    {--people} {--saved-searches} {--public-tags} {--private-tags}
+    ';
 
     /**
      * The console command description.
@@ -76,11 +80,6 @@ class AlgoliaIndex extends Command
      */
     public function handle()
     {
-        $params = array(
-            "sort"       => [['field' => 'Published', 'direction' => "desc"]],
-            "maxRecords" => $this->_limit(),
-        );
-
         $client = SearchClient::create(Util::algoliaAppId(), Util::algoliaPrivateKey());
         $this->index = $client->initIndex('all');
         $this->info("Updating Algolia search index (limit: " . $this->_limit() . ")");
@@ -103,6 +102,23 @@ class AlgoliaIndex extends Command
         if ($this->shouldIndex('saved-searches')) {
             $savedSearches = (new SavedSearch())->getRecords();
             $this->_indexRecords($savedSearches, 'saved searches');
+        }
+
+        if ($this->shouldIndex('public-tags')) {
+            $tags = (new PublicTag())->getRecords();
+            foreach ($tags as $tag) {
+                /** @var PublicTag $tag */
+                if (! $tag->slug()) {
+                    $slug = $tag->generateAndSaveSlug();
+                    $this->info("Generating slug for {$tag->name()}: $slug");
+                }
+            }
+            $this->_indexRecords($tags, 'public tags');
+        }
+
+        if ($this->shouldIndex('private-tags')) {
+            $tags = (new PrivateTag())->getRecords();
+            $this->_indexRecords($tags, 'tags');
         }
 
         return;

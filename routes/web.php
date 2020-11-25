@@ -21,4 +21,6 @@ Route::get('/account/people/{id}/delete', 'AccountController@personDelete');
 
 Route::get('/blog/{slug}', 'IndexController@blog');
 Route::get('/s/{slug}', 'IndexController@savedSearch');
+Route::get('/t/{slug}', 'IndexController@publicTag');
+Route::get('/private-tag/{id}', 'IndexController@privateTag');
 Route::get('/{slug}', 'IndexController@person');

@@ -41,11 +41,39 @@ class PrivateTag extends Airtable
         return isset($this->fields->{'People'}) ? $this->fields->{'People'} : [];
     }
 
+    public function url()
+    {
+        return '/private-tag/' . $this->id();
+    }
+
+    public function peopleForUser($user)
+    {
+        $tagName = $this->name();
+        $userName = $user->name();
+
+        $params = array(
+            "filterByFormula" => "FIND('$tagName tagged by $userName', {Private Tags})",
+            "sort"            => [['field' => 'Created', 'direction' => "desc"]],
+        );
+
+        $people = (new Person())->getRecords($params);
+        return $people;
+    }
+
+    public function searchTitle()
+    {
+        return "Private Tag: " . $this->name();
+    }
+
     public function toSearchIndexArray()
     {
         return [
-            'type'      => 'private_tag',
-            'object_id' => $this->searchIndexId(),
+            'type'         => 'private-tag',
+            'object_id'    => $this->searchIndexId(),
+            'search_title' => $this->searchTitle(),
+            'url'          => $this->url(),
+            'name'         => $this->name(),
+            'user'         => $this->userId(),
         ];
     }
 

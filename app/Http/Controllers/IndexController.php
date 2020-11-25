@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Algolia\AlgoliaSearch\SearchClient;
 use App\Blog;
 use App\Person;
+use App\PrivateTag;
+use App\PublicTag;
 use App\SavedSearch;
 use App\User;
 use App\Util;
@@ -36,7 +38,12 @@ class IndexController extends Controller
             $filter = "Private = 0";
         }
 
-        $savedSearches = (new SavedSearch())->recordsWithFilter($filter);
+        $params = array(
+            "filterByFormula" => $filter,
+            "sort"            => [['field' => 'Modified', 'direction' => "desc"]],
+        );
+
+        $savedSearches = (new SavedSearch())->getRecords($params);
 
         return view('welcome', [
             'error'         => $request->input('error'),
@@ -115,4 +122,53 @@ class IndexController extends Controller
             'people'      => $people,
         ]);
     }
+
+    public function publicTag(Request $request, $slugOrId)
+    {
+        /** @var User $user */
+        $user = $request->session()->get('user');
+
+        /** @var PublicTag $tag */
+        $tag = (new PublicTag())->lookupWithFilter("Slug = '$slugOrId'");
+        if (!$tag) {
+            abort(404);
+        }
+
+        $people = $tag->people();
+
+        return view('tag', [
+            'error'   => $request->input('error'),
+            'success' => $request->input('success'),
+            'user'    => $user,
+            'tag'     => $tag,
+            'people'  => $people,
+        ]);
+    }
+
+    public function privateTag(Request $request, $id)
+    {
+        /** @var User $user */
+        $user = $request->session()->get('user');
+
+        if (! $user) {
+            abort(403);
+        }
+
+        /** @var PrivateTag $tag */
+        $tag = (new PrivateTag())->load($id);
+        if (!$tag) {
+            abort(404);
+        }
+
+        $people = $tag->peopleForUser($user);
+
+        return view('tag', [
+            'error'   => $request->input('error'),
+            'success' => $request->input('success'),
+            'user'    => $user,
+            'tag'     => $tag,
+            'people'  => $people,
+        ]);
+    }
+
 }

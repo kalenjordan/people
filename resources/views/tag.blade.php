@@ -1,6 +1,6 @@
 <?php
 /** @var \App\User $user */
-/** @var \App\SavedSearch $savedSearch */
+/** @var \App\PublicTag $tag */
 /** @var \App\Person $person */
 ?>
 
@@ -8,7 +8,7 @@
 
 @section('title')
     <title>
-        {{ $savedSearch->name() }} | {{ \App\Util::appName() }}
+        {{ $tag->name() }} | {{ \App\Util::appName() }}
     </title>
 @endsection
 
@@ -16,7 +16,7 @@
     <div class="mx-auto max-w-2xl px-4 sm:px-6 mt-6 mb-12">
         <div class="text-center">
             <h2 class="text-3xl sm:text-3xl md:text-4xl tracking-tight leading-10 font-extrabold text-gray-900  sm:leading-none">
-                {{ $savedSearch->name() }}
+                {{ $tag->name() }}
             </h2>
         </div>
     </div>
@@ -37,20 +37,10 @@
                             <dd class="mt-3 -ml-1 -mr-1">
                                 @foreach ($person->publicTagNames() as $tag)
                                     <span
-                                        class="inline-block m-1 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs font-medium rounded-full">{{ $tag }}</span>
+                                        class="inline-block m-1 px-2 py-1 text-gray-800 text-xs font-medium bg-gray-100 rounded-full">{{ $tag }}</span>
                                 @endforeach
                             </dd>
                         </dl>
-                        @if ($user)
-                            <dl class="mt-1">
-                                <dd class="mt-3 -ml-1 -mr-1">
-                                    @foreach ($person->privateTagsFor($user) as $tag)
-                                        <span
-                                            class="inline-block m-1 px-2 py-1 border-2 border-dashed text-gray-800 text-xs font-medium bg-gray-100 rounded-full">{{ $tag->name() }}</span>
-                                    @endforeach
-                                </dd>
-                            </dl>
-                        @endif
                     </div>
                 </a>
             </li>
