@@ -2,6 +2,12 @@
 
 namespace App;
 
+/**
+ * Class Person
+ * @package App
+ *
+ * @method Person lookupWithFilter($filter)
+ */
 class Person extends Airtable
 {
     protected $table = "People";

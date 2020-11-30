@@ -168,17 +168,19 @@ class AccountController extends Controller
         return redirect($person->url());
     }
 
-    public function personNewFromTwitter(Request $request)
+    public function personNewFromTwitter(Request $request, $twitterUsername)
     {
         /** @var User $user */
         $user = $request->session()->get('user');
         if (!$user) {
-            return redirect("/auth?redirect=" . urlencode($request->url()));
+            $url = '/account/people/new-from-twitter/' . $twitterUsername;
+            return redirect("/auth?redirect=" . urlencode($url));
         }
 
-        $twitterUrl = $request->input('url');
-        $parts = explode('/', $twitterUrl);
-        $twitterUsername = $parts[count($parts) - 1];
+        $existing = (new Person())->lookupWithFilter("Twitter = '$twitterUsername'");
+        if ($existing) {
+            return redirect($existing->url() . '?existing');
+        }
 
         $profile = Twitter::getProfile($twitterUsername);
 

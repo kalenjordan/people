@@ -30,23 +30,23 @@
                         <img class="w-32 h-32 flex-shrink-0 mx-auto bg-black rounded-full"
                              src="{{ $person->avatar() }}"
                              alt="">
-                        <h3 class="mt-6 text-gray-900 text-lg font-medium">
+                        <h3 class="mt-4 text-gray-900 text-xl font-medium">
                             {{ $person->name() }}
                         </h3>
-                        <dl class="mt-1">
-                            <dd class="mt-3 -ml-1 -mr-1">
+                        <dl class="mt-2">
+                            <dd class="">
                                 @foreach ($person->publicTagNames() as $tag)
                                     <span
-                                        class="inline-block m-1 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs font-medium rounded-full">{{ $tag }}</span>
+                                        class="inline-block mt-1 mb-1 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs font-medium rounded-full">{{ $tag }}</span>
                                 @endforeach
                             </dd>
                         </dl>
                         @if ($user)
                             <dl class="mt-1">
-                                <dd class="mt-3 -ml-1 -mr-1">
+                                <dd class="">
                                     @foreach ($person->privateTagsFor($user) as $tag)
                                         <span
-                                            class="inline-block m-1 px-2 py-1 border-2 border-dashed text-gray-800 text-xs font-medium bg-gray-100 rounded-full">{{ $tag->name() }}</span>
+                                            class="inline-block mt-1 mb-1 px-2 py-1 border-2 border-dashed text-gray-800 text-xs font-medium bg-gray-100 rounded-full">{{ $tag->name() }}</span>
                                     @endforeach
                                 </dd>
                             </dl>
