@@ -278,11 +278,12 @@ class ApiController extends Controller
         $tagId = $request->input('tag');
         $newTag = $request->input('new_tag');
         if ($newTag) {
-            (new PrivateTag())->create([
+            $privateTag = (new PrivateTag())->create([
                 'Name'   => $newTag,
                 'User'   => [$user->id()],
                 'People' => [$person->id()],
             ]);
+            $privateTag->saveToSearchIndex();
 
             // Refresh
             $person = $person->load($person->id());
@@ -313,6 +314,7 @@ class ApiController extends Controller
         $tag->save([
             'People' => $people,
         ]);
+        $tag->saveToSearchIndex();
 
         if (empty($people)) {
             $tag->delete();
